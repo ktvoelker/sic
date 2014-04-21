@@ -1,0 +1,70 @@
+
+SiC: Simple Configuration Files
+===============================
+
+Goals:
+1. A well-specified format
+2. Not bound to a particular character encoding
+3. As simple as INI in cases where INI could be used
+4. Less confusing than YAML
+5. Less noisy than JSON
+6. Easy for a text editor to infer correct indentation
+7. Syntax includes comments
+8. Support for variables and substitution
+
+Would also be nice:
+1. A schema language
+
+var=value
+key: value
+key:
+  var2=this one is scoped
+  nested: $var2
+  nested:
+    * list item
+    * another list $var item
+    * a third list item
+    * nested: dict in a list
+    * * nested list
+      * second item in nested list
+    * * * whoa
+        * another
+      * different depth
+key: "quoted value $var"
+"quoted key": "please don't"
+'other quotes': 'why not?'
+
+
+SO WHAT ARE THE RULES?
+
+The top-level is a dictionary.
+
+A dictionary consists of key-value pairs and variable bindings.
+
+A variable binding is always a single line.
+
+A scalar value may originate from multiple tokens, in which case it is the
+values of all those tokens, joined with a single space between each adjacent
+pair. Each quoted scalar evaluates to a single scalar token.
+
+If a key-value pair has no value on the first line, then its value is either:
+  * A nested dictionary, if the next line is indented and starts with a key
+  * A nested list, if the next line is indented and starts with an asterisk
+  * A scalar, if the next line is indented
+  * Empty, if the next line is not indented
+  * An error, otherwise
+
+The type of a list item is determined by what follows the asterisk on the *same* line:
+  * A nested dictionary, if there is a key
+  * A nested list, if there is another asterisk (further items in that list
+    come on subsequent lines, with their asterisks indented to match that of
+    the first)
+  * A scalar, otherwise
+
+
+SCHEMAS
+
+Without a schema, all scalars are interpreted as strings. A schema can require
+both a particular structure of dictionaries and lists, as well as rules and
+interpretations for scalars.
+
