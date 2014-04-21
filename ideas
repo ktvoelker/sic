@@ -68,3 +68,41 @@ Without a schema, all scalars are interpreted as strings. A schema can require
 both a particular structure of dictionaries and lists, as well as rules and
 interpretations for scalars.
 
+
+AN ALTERNATE SYNTAX
+
+This adds a bit more simplicity and a bit less brevity. It also has the
+advantage that you could define it independent of indentation:
+
+var = val
+foo: bar
+foo: {
+  baz: quux $var
+}
+more: [
+  item1
+  item2
+  {
+    somewhat: ugly
+  }
+  [
+    but that
+    is life
+  ]
+]
+and: [{
+  key: value
+  key: value
+  .
+  key: value
+  key: value
+  key: value
+}]
+
+This is essentially JSON with a bunch of simplifications:
+1. We use newlines instead of commas.
+2. Nothing has to be quoted.
+3. The top level is always a dictionary.
+4. Variables and interpolation are added.
+5. When a list contains nothing but dictionaries, there is a shortcut syntax. [{ }] with interior }{ replaced by a period.
+
